@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SRS — تطبيق حفظ القرآن الكريم</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@300;400;600;700;900&family=Noto+Naskh+Arabic:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f0d;
+    --bg2: #0e1510;
+    --bg3: #121a14;
+    --card: #141c16;
+    --card2: #1a2420;
+    --gold: #c9a84c;
+    --gold2: #e8c96a;
+    --gold3: #f0d98a;
+    --green: #2d6a4f;
+    --green2: #40916c;
+    --green3: #74c69d;
+    --text: #e8e4d9;
+    --text2: #b8b4a8;
+    --text3: #7a7670;
+    --red: #e05252;
+    --yellow: #d4a017;
+    --lgreen: #4a9e6b;
+    --border: rgba(201,168,76,0.15);
+    --border2: rgba(201,168,76,0.08);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Cairo', sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* =========== BACKGROUND PATTERN =========== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(45,106,79,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(201,168,76,0.06) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.03'%3E%3Cpolygon points='30 0 60 20 60 40 30 60 0 40 0 20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* =========== SIDEBAR NAV =========== */
+  .sidebar {
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 260px;
+    height: 100vh;
+    background: linear-gradient(180deg, var(--bg2) 0%, var(--bg3) 100%);
+    border-left: 1px solid var(--border);
+    padding: 30px 0;
+    overflow-y: auto;
+    z-index: 100;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar::-webkit-scrollbar { width: 3px; }
+  .sidebar::-webkit-scrollbar-track { background: transparent; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .sidebar-logo {
+    padding: 0 24px 24px;
+    border-bottom: 1px solid var(--border2);
+    margin-bottom: 20px;
+  }
+
+  .sidebar-logo .app-name {
+    font-size: 13px;
+    color: var(--gold);
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    display: block;
+  }
+
+  .sidebar-logo .doc-type {
+    font-size: 11px;
+    color: var(--text3);
+    font-weight: 300;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    color: var(--text3);
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    padding: 8px 24px 4px;
+    text-transform: uppercase;
+  }
+
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 24px;
+    color: var(--text2);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 400;
+    transition: all 0.2s;
+    border-right: 2px solid transparent;
+    position: relative;
+  }
+
+  .nav-link:hover, .nav-link.active {
+    color: var(--gold2);
+    background: rgba(201,168,76,0.05);
+    border-right-color: var(--gold);
+  }
+
+  .nav-num {
+    font-size: 10px;
+    color: var(--text3);
+    font-family: 'Cairo', sans-serif;
+    min-width: 16px;
+  }
+
+  /* =========== MAIN CONTENT =========== */
+  .main {
+    margin-right: 260px;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* =========== HERO =========== */
+  .hero {
+    padding: 80px 70px 60px;
+    border-bottom: 1px solid var(--border2);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '﷽';
+    position: absolute;
+    left: -40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Amiri', serif;
+    font-size: 200px;
+    color: rgba(201,168,76,0.03);
+    pointer-events: none;
+    line-height: 1;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 100px;
+    padding: 5px 16px;
+    font-size: 11px;
+    color: var(--gold2);
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-bottom: 24px;
+  }
+
+  .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: pulse 2s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Amiri', serif;
+    font-size: 52px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+    margin-bottom: 12px;
+  }
+
+  .hero h1 span { color: var(--gold); }
+
+  .hero-subtitle {
+    font-size: 18px;
+    color: var(--text2);
+    font-weight: 300;
+    margin-bottom: 40px;
+  }
+
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .meta-item { display: flex; flex-direction: column; gap: 2px; }
+  .meta-label { font-size: 10px; color: var(--text3); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+  .meta-value { font-size: 14px; color: var(--gold2); font-weight: 600; }
+
+  .hero-divider {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin: 32px 0;
+  }
+
+  /* =========== CONTENT =========== */
+  .content {
+    padding: 0 70px 80px;
+  }
+
+  /* =========== SECTION =========== */
+  .section {
+    padding: 60px 0 20px;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .section:last-child { border-bottom: none; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .section-num {
+    font-family: 'Amiri', serif;
+    font-size: 13px;
+    color: var(--gold);
+    font-weight: 700;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 8px;
+    padding: 6px 12px;
+    white-space: nowrap;
+  }
+
+  .section h2 {
+    font-family: 'Amiri', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+  }
+
+  .section h3 {
+    font-family: 'Cairo', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--gold2);
+    margin: 36px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section h3::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: var(--gold);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .section p {
+    color: var(--text2);
+    font-size: 14.5px;
+    line-height: 1.9;
+    margin-bottom: 16px;
+  }
+
+  /* =========== REQUIREMENT TABLE =========== */
+  .req-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 16px 0 28px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .req-table thead tr {
+    background: linear-gradient(90deg, rgba(45,106,79,0.4), rgba(45,106,79,0.2));
+  }
+
+  .req-table thead th {
+    padding: 13px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold2);
+    letter-spacing: 0.8px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .req-table tbody tr {
+    background: var(--card);
+    transition: background 0.2s;
+  }
+
+  .req-table tbody tr:nth-child(even) { background: var(--card2); }
+  .req-table tbody tr:hover { background: rgba(201,168,76,0.06); }
+
+  .req-table tbody td {
+    padding: 13px 16px;
+    font-size: 13px;
+    color: var(--text2);
+    border-bottom: 1px solid var(--border2);
+    vertical-align: top;
+    line-height: 1.7;
+  }
+
+  .req-table tbody tr:last-child td { border-bottom: none; }
+
+  .req-id {
+    font-family: 'Cairo', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--green3);
+    white-space: nowrap;
+    background: rgba(74,158,107,0.12);
+    padding: 3px 8px;
+    border-radius: 5px;
+    border: 1px solid rgba(74,158,107,0.25);
+    display: inline-block;
+  }
+
+  .priority {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .priority::before { content: ''; width: 5px; height: 5px; border-radius: 50%; }
+
+  .priority.high {
+    background: rgba(224,82,82,0.12);
+    color: #f08080;
+    border: 1px solid rgba(224,82,82,0.25);
+  }
+  .priority.high::before { background: #e05252; }
+
+  .priority.mid {
+    background: rgba(212,160,23,0.12);
+    color: #e8c040;
+    border: 1px solid rgba(212,160,23,0.25);
+  }
+  .priority.mid::before { background: #d4a017; }
+
+  .priority.low {
+    background: rgba(74,158,107,0.12);
+    color: #74c69d;
+    border: 1px solid rgba(74,158,107,0.25);
+  }
+  .priority.low::before { background: #4a9e6b; }
+
+  /* =========== BULLETS =========== */
+  .bullet-list {
+    list-style: none;
+    margin: 12px 0 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .bullet-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: var(--text2);
+    font-size: 14px;
+    line-height: 1.7;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: rgba(201,168,76,0.03);
+    border: 1px solid var(--border2);
+    transition: border-color 0.2s;
+  }
+
+  .bullet-list li:hover { border-color: var(--border); }
+
+  .bullet-list li::before {
+    content: '◆';
+    color: var(--gold);
+    font-size: 8px;
+    flex-shrink: 0;
+    margin-top: 5px;
+  }
+
+  /* =========== INFO CARD =========== */
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+  }
+
+  .info-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+
+  .info-card:hover {
+    border-color: rgba(201,168,76,0.4);
+    transform: translateY(-2px);
+  }
+
+  .info-card-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--text3);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .info-card-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--gold2);
+  }
+
+  .info-card-desc {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 4px;
+    line-height: 1.6;
+  }
+
+  /* =========== STATS BAR =========== */
+  .stats-bar {
+    display: flex;
+    gap: 1px;
+    background: var(--border2);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 28px 0;
+    border: 1px solid var(--border);
+  }
+
+  .stat-item {
+    flex: 1;
+    padding: 20px 24px;
+    background: var(--card);
+    text-align: center;
+    transition: background 0.2s;
+  }
+
+  .stat-item:hover { background: var(--card2); }
+
+  .stat-num {
+    font-family: 'Amiri', serif;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+    display: block;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: var(--text3);
+    margin-top: 6px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  /* =========== UC CARD =========== */
+  .uc-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    transition: border-color 0.2s;
+  }
+
+  .uc-card:hover { border-color: rgba(201,168,76,0.4); }
+
+  .uc-header {
+    padding: 16px 20px;
+    background: linear-gradient(90deg, rgba(45,106,79,0.3), rgba(45,106,79,0.1));
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .uc-id {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--gold);
+    background: rgba(201,168,76,0.1);
+    padding: 3px 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(201,168,76,0.2);
+  }
+
+  .uc-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .uc-body {
+    padding: 0;
+  }
+
+  .uc-row {
+    display: flex;
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .uc-row:last-child { border-bottom: none; }
+
+  .uc-key {
+    width: 140px;
+    flex-shrink: 0;
+    padding: 12px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold2);
+    background: rgba(201,168,76,0.04);
+    border-left: 1px solid var(--border2);
+  }
+
+  .uc-val {
+    padding: 12px 16px;
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.7;
+    flex: 1;
+    white-space: pre-line;
+  }
+
+  /* =========== CONSTRAINT BOX =========== */
+  .constraint-box {
+    background: rgba(224,82,82,0.06);
+    border: 1px solid rgba(224,82,82,0.2);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin: 16px 0;
+  }
+
+  .constraint-box .box-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: #f08080;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .constraint-box .box-title::before {
+    content: '⚠';
+    font-size: 14px;
+  }
+
+  /* =========== FOOTER =========== */
+  .doc-footer {
+    margin-right: 260px;
+    padding: 32px 70px;
+    border-top: 1px solid var(--border2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--text3);
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-logo {
+    font-family: 'Amiri', serif;
+    font-size: 18px;
+    color: var(--gold);
+  }
+
+  /* =========== SCROLL TOP =========== */
+  .scroll-top {
+    position: fixed;
+    bottom: 30px;
+    left: 30px;
+    width: 44px;
+    height: 44px;
+    background: var(--gold);
+    color: var(--bg);
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s;
+    z-index: 200;
+  }
+
+  .scroll-top.show { opacity: 1; transform: translateY(0); }
+  .scroll-top:hover { background: var(--gold2); transform: translateY(-3px); }
+
+  /* =========== ANIMATIONS =========== */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section { animation: fadeInUp 0.5s ease both; }
+
+  /* =========== RESPONSIVE =========== */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main, .doc-footer { margin-right: 0; }
+    .hero, .content { padding-left: 24px; padding-right: 24px; }
+    .hero h1 { font-size: 34px; }
+    .doc-footer { padding: 24px; }
+  }
+
+  /* =========== SCROLLBAR =========== */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
+
+  /* =========== PROGRESS BAR =========== */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    right: 260px;
+    left: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--green2), var(--gold));
+    z-index: 999;
+    transform-origin: right;
+    transform: scaleX(0);
+    transition: transform 0.1s;
+  }
+
+  /* =========== TOC HIGHLIGHT =========== */
+  .req-table .highlight-row td { background: rgba(201,168,76,0.08); }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <span class="app-name">تطبيق حفظ القرآن</span>
+    <span class="doc-type">Software Requirements Specification</span>
+  </div>
+  <div class="nav-section-label">المحتويات</div>
+  <a href="#s1" class="nav-link"><span class="nav-num">01</span> المقدمة</a>
+  <a href="#s2" class="nav-link"><span class="nav-num">02</span> الوصف العام</a>
+  <a href="#s3" class="nav-link"><span class="nav-num">03</span> المتطلبات الوظيفية</a>
+  <a href="#s3-1" class="nav-link" style="padding-right:36px"><span class="nav-num">·</span> المصادقة</a>
+  <a href="#s3-2" class="nav-link" style="padding-right:36px"><span class="nav-num">·</span> عرض القرآن</a>
+  <a href="#s3-3" class="nav-link" style="padding-right:36px"><span class="nav-num">·</span> التسميع والتسجيل</a>
+  <a href="#s3-4" class="nav-link" style="padding-right:36px"><span class="nav-num">·</span> التأثيرات الصوتية</a>
+  <a href="#s3-5" class="nav-link" style="padding-right:36px"><span class="nav-num">·</span> تصدير الملف</a>
+  <a href="#s3-6" class="nav-link" style="padding-right:36px"><span class="nav-num">·</span> الملاحظات</a>
+  <a href="#s3-7" class="nav-link" style="padding-right:36px"><span class="nav-num">·</span> الواجهة والإعدادات</a>
+  <a href="#s4" class="nav-link"><span class="nav-num">04</span> المتطلبات غير الوظيفية</a>
+  <a href="#s5" class="nav-link"><span class="nav-num">05</span> الواجهات الخارجية</a>
+  <a href="#s6" class="nav-link"><span class="nav-num">06</span> حالات الاستخدام</a>
+  <a href="#s7" class="nav-link"><span class="nav-num">07</span> متطلبات البيانات</a>
+  <a href="#s8" class="nav-link"><span class="nav-num">08</span> القيود والاعتبارات</a>
+  <a href="#s9" class="nav-link"><span class="nav-num">09</span> الملاحق</a>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">SRS — الإصدار 1.0 — مسودة أولية</div>
+    <h1>مواصفات متطلبات البرمجيات<br><span>تطبيق حفظ القرآن الكريم</span></h1>
+    <div class="hero-divider"></div>
+    <p class="hero-subtitle">بالتسميع الصوتي — Quran Memorization via Voice Recitation</p>
+    <div class="hero-meta">
+      <div class="meta-item">
+        <span class="meta-label">الإصدار</span>
+        <span class="meta-value">1.0.0</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">التاريخ</span>
+        <span class="meta-value">فبراير 2025</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">الحالة</span>
+        <span class="meta-value">مسودة أولية</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">المنصات</span>
+        <span class="meta-value">iOS · Android · Web</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div style="padding: 0 70px">
+    <div class="stats-bar">
+      <div class="stat-item">
+        <span class="stat-num">37</span>
+        <span class="stat-label">متطلباً وظيفياً</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">7</span>
+        <span class="stat-label">وحدات نظام</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">16</span>
+        <span class="stat-label">متطلباً غير وظيفي</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">9</span>
+        <span class="stat-label">أقسام</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ===== SECTION 1 ===== -->
+    <section class="section" id="s1">
+      <div class="section-header">
+        <span class="section-num">01</span>
+        <h2>المقدمة</h2>
+      </div>
+
+      <h3>1.1 الغرض من الوثيقة</h3>
+      <p>تهدف هذه الوثيقة إلى تحديد المتطلبات الوظيفية وغير الوظيفية لتطبيق حفظ القرآن الكريم بالتسميع الصوتي. تُوجَّه هذه الوثيقة إلى فريق التطوير ومدراء المشروع وأصحاب المصلحة، وتمثّل المرجع الأساسي لعمليات التصميم والتطوير والاختبار.</p>
+
+      <h3>1.2 نطاق النظام</h3>
+      <p>التطبيق منصة رقمية تتيح لمستخدميها حفظ القرآن الكريم عبر آلية التسميع الصوتي، إذ يقرأ المستخدم الآيات ثم يتحقق من صحة حفظه عبر الاستماع لتسجيله مقابل النص. يدعم التطبيق <strong style="color:var(--gold2)">iOS · Android · Web</strong>، ويتيح التخزين السحابي الاختياري عبر Google Drive.</p>
+
+      <h3>1.3 المصطلحات والاختصارات</h3>
+      <table class="req-table">
+        <thead><tr><th>الاختصار</th><th>المسمى الكامل</th><th>المعنى</th></tr></thead>
+        <tbody>
+          <tr><td><span class="req-id">SRS</span></td><td>Software Requirements Specification</td><td>مستند مواصفات متطلبات البرمجيات</td></tr>
+          <tr><td><span class="req-id">FR</span></td><td>Functional Requirement</td><td>متطلب وظيفي</td></tr>
+          <tr><td><span class="req-id">NFR</span></td><td>Non-Functional Requirement</td><td>متطلب غير وظيفي</td></tr>
+          <tr><td><span class="req-id">UI</span></td><td>User Interface</td><td>واجهة المستخدم</td></tr>
+          <tr><td><span class="req-id">OAuth</span></td><td>Open Authorization</td><td>بروتوكول التفويض المفتوح (تسجيل الدخول بجوجل)</td></tr>
+          <tr><td><span class="req-id">RTL</span></td><td>Right To Left</td><td>اتجاه الكتابة من اليمين إلى اليسار</td></tr>
+        </tbody>
+      </table>
+
+      <h3>1.4 المراجع</h3>
+      <ul class="bullet-list">
+        <li>إرشادات تصميم تطبيقات القرآن الكريم — رابطة المطورين الإسلاميين</li>
+        <li>معيار IEEE 830 لمواصفات متطلبات البرمجيات</li>
+        <li>وثائق Google Drive API v3</li>
+        <li>المصحف الرقمي — بيانات القرآن الكريم عبر Tanzil.net / Quran.com API v4</li>
+      </ul>
+    </section>
+
+    <!-- ===== SECTION 2 ===== -->
+    <section class="section" id="s2">
+      <div class="section-header">
+        <span class="section-num">02</span>
+        <h2>الوصف العام للنظام</h2>
+      </div>
+
+      <h3>2.1 منظور المنتج</h3>
+      <p>يندرج التطبيق ضمن فئة تطبيقات التعلم الإسلامي الرقمي. يعمل بشكل مستقل ويتيح التكامل الاختياري مع Google Drive لرفع التسجيلات الصوتية.</p>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="info-card-label">المنصات المدعومة</div>
+          <div class="info-card-value">iOS 15+</div>
+          <div class="info-card-desc">تطبيق أصلي عبر App Store</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">المنصات المدعومة</div>
+          <div class="info-card-value">Android 8.0+</div>
+          <div class="info-card-desc">API 26+ — Google Play Store</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">المنصات المدعومة</div>
+          <div class="info-card-value">الويب</div>
+          <div class="info-card-desc">Chrome · Safari · Firefox · Edge</div>
+        </div>
+        <div class="info-card">
+          <div class="info-card-label">التكامل الخارجي</div>
+          <div class="info-card-value">Google Drive</div>
+          <div class="info-card-desc">اختياري — برضا المستخدم الصريح</div>
+        </div>
+      </div>
+
+      <h3>2.2 فئات المستخدمين</h3>
+      <table class="req-table">
+        <thead><tr><th>الفئة</th><th>الوصف</th><th>الصلاحيات</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--text)">المستخدم الضيف</strong></td>
+            <td>يستخدم التطبيق دون تسجيل دخول</td>
+            <td>وصول كامل لجميع الوظائف المحلية — لا رفع Drive</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--gold2)">المستخدم المسجّل</strong></td>
+            <td>سجّل الدخول عبر Google OAuth</td>
+            <td>جميع الصلاحيات + رفع التسجيلات تلقائياً على Drive</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--green3)">مدير النظام</strong></td>
+            <td>يدير البنية التحتية والبيانات</td>
+            <td>إدارة مصادر القرآن وتحديثات التطبيق</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>2.3 القيود العامة</h3>
+      <ul class="bullet-list">
+        <li>يجب أن يعمل التطبيق بدون اتصال بالإنترنت لعرض القرآن والتسجيل الصوتي</li>
+        <li>يجب احترام سياسات خصوصية Google OAuth 2.0</li>
+        <li>لا يجوز تعديل نص القرآن الكريم بأي صورة كانت</li>
+        <li>يجب التحقق من مصدر بيانات القرآن وصحته عبر checksum</li>
+      </ul>
+    </section>
+
+    <!-- ===== SECTION 3 ===== -->
+    <section class="section" id="s3">
+      <div class="section-header">
+        <span class="section-num">03</span>
+        <h2>المتطلبات الوظيفية</h2>
+      </div>
+
+      <!-- 3.1 -->
+      <h3 id="s3-1">3.1 وحدة المصادقة وإدارة الحسابات</h3>
+      <table class="req-table">
+        <thead><tr><th>المعرّف</th><th>الوصف المختصر</th><th>التفاصيل</th><th>الأولوية</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="req-id">FR-AUTH-01</span></td>
+            <td>تسجيل الدخول بجوجل</td>
+            <td>يجب أن يتيح التطبيق تسجيل الدخول باستخدام Google OAuth 2.0. تظهر شاشة ترحيب مع زر "تسجيل الدخول بجوجل" وزر "تخطي" بارز.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-AUTH-02</span></td>
+            <td>التخطي دون تسجيل</td>
+            <td>يجب أن يتمكن المستخدم من الضغط على "تخطي" والانتقال مباشرة للتطبيق مع الحفاظ على جميع الوظائف المحلية.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-AUTH-03</span></td>
+            <td>موافقة رفع Drive</td>
+            <td>يجب عرض نافذة موافقة صريحة تشرح البيانات التي سيتم رفعها قبل طلب صلاحيات Google Drive.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-AUTH-04</span></td>
+            <td>تسجيل الخروج</td>
+            <td>يجب أن يتمكن المستخدم المسجّل من تسجيل الخروج في أي وقت مع الاحتفاظ بالبيانات المحلية.</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-AUTH-05</span></td>
+            <td>الرفع التلقائي على Drive</td>
+            <td>بعد إيقاف التسجيل وبموافقة مسبقة، يتم رفع الملف الصوتي تلقائياً إلى مجلد محدد في Drive الخاص بالمستخدم.</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 3.2 -->
+      <h3 id="s3-2">3.2 وحدة عرض القرآن الكريم</h3>
+      <table class="req-table">
+        <thead><tr><th>المعرّف</th><th>الوصف المختصر</th><th>التفاصيل</th><th>الأولوية</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="req-id">FR-QURAN-01</span></td>
+            <td>مصدر موثوق</td>
+            <td>الاعتماد على Tanzil.net أو Quran.com API v4 أو مصحف المدينة المنورة الرقمي مع التحقق من سلامة البيانات بـ checksum.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-QURAN-02</span></td>
+            <td>عرض الصفحات</td>
+            <td>عرض القرآن صفحةً بصفحةً بتنسيق المصحف التقليدي مع الحفاظ على الخط والتشكيل الكاملين.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-QURAN-03</span></td>
+            <td>التنقل الأفقي</td>
+            <td>التنقل بين الصفحات بالتمرير الأفقي (Swipe) أو بالأزرار، مع انتقال سلس ومؤثر بصري خفيف.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-QURAN-04</span></td>
+            <td>القائمة الجانبية للسور</td>
+            <td>قائمة جانبية قابلة للسحب تحتوي على جميع السور مرتبةً بأرقامها وأسمائها ونوعها (مكية/مدنية) وعدد آياتها.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-QURAN-05</span></td>
+            <td>الانتقال للسورة</td>
+            <td>عند اختيار سورة من القائمة، ينتقل العرض مباشرةً للصفحة الأولى منها.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-QURAN-06</span></td>
+            <td>حفظ موضع القراءة</td>
+            <td>حفظ آخر صفحة قرأها المستخدم واستئناف القراءة منها عند فتح التطبيق.</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 3.3 -->
+      <h3 id="s3-3">3.3 وحدة التسميع والتسجيل الصوتي</h3>
+      <table class="req-table">
+        <thead><tr><th>المعرّف</th><th>الوصف المختصر</th><th>التفاصيل</th><th>الأولوية</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="req-id">FR-REC-01</span></td>
+            <td>زر التسميع</td>
+            <td>بعد اختيار السورة يظهر زر دائري في أسفل منتصف الشاشة بأيقونة ميكروفون ونص "ابدأ التسميع".</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-REC-02</span></td>
+            <td>إخفاء النص</td>
+            <td>فور الضغط على زر التسميع، يُخفى نص الصفحة تدريجياً وتبقى: اسم السورة، رقم الصفحة، والبسملة إن وُجدت.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-REC-03</span></td>
+            <td>مؤشر التسجيل</td>
+            <td>أثناء التسجيل يظهر مؤشر بصري نابض (موجة صوتية) ومؤقت زمني يعرض مدة التسجيل.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-REC-04</span></td>
+            <td>إيقاف التسجيل</td>
+            <td>يتحول الزر إلى "إيقاف" أحمر اللون. عند الضغط عليه يتوقف التسجيل وتعود الكلمات للظهور تدريجياً.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-REC-05</span></td>
+            <td>الاستماع للتسجيل</td>
+            <td>بعد ظهور الكلمات، يظهر مشغّل صوتي يتيح: التشغيل، الإيقاف المؤقت، الترجيع، التقديم، وشريط التقدم.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-REC-06</span></td>
+            <td>تسجيلات متعددة</td>
+            <td>إمكانية إجراء تسجيلات متعددة للصفحة الواحدة مع إمكانية إعادة التسميع في أي وقت.</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-REC-07</span></td>
+            <td>سجل التسجيلات</td>
+            <td>قائمة بجميع التسجيلات السابقة مرتبةً بالتاريخ مع إمكانية الحذف.</td>
+            <td><span class="priority low">منخفضة</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 3.4 -->
+      <h3 id="s3-4">3.4 وحدة التأثيرات الصوتية</h3>
+      <table class="req-table">
+        <thead><tr><th>المعرّف</th><th>الوصف المختصر</th><th>التفاصيل</th><th>الأولوية</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="req-id">FR-FX-01</span></td>
+            <td>قائمة المؤثرات</td>
+            <td>توفير قائمة بالمؤثرات الصوتية تشمل: صدى الصوت (Echo)، الرنين (Reverb)، تطبيع الصوت (Normalize)، تصفية الضوضاء (Noise Reduction).</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-FX-02</span></td>
+            <td>التطبيق الفوري</td>
+            <td>عند الضغط على اسم المؤثر، يُطبَّق فوراً على الصوت المسجّل دون تأكيد إضافي ويُعاد تشغيله تلقائياً.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-FX-03</span></td>
+            <td>دمج المؤثرات</td>
+            <td>تطبيق أكثر من مؤثر في آنٍ واحد مع معاينة حية للنتيجة.</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-FX-04</span></td>
+            <td>إعادة الضبط</td>
+            <td>زر "إزالة التأثيرات" لاستعادة الصوت الأصلي دون مؤثرات.</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 3.5 -->
+      <h3 id="s3-5">3.5 وحدة تصدير الملف الصوتي</h3>
+      <table class="req-table">
+        <thead><tr><th>المعرّف</th><th>الوصف المختصر</th><th>التفاصيل</th><th>الأولوية</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="req-id">FR-EXP-01</span></td>
+            <td>تصدير الملف</td>
+            <td>تصدير التسجيل بعد تطبيق التأثيرات كملف MP3 أو M4A.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-EXP-02</span></td>
+            <td>اختيار الجودة</td>
+            <td>خيارات جودة الصوت: عالية (256kbps)، متوسطة (128kbps)، منخفضة (64kbps).</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-EXP-03</span></td>
+            <td>تسمية الملف</td>
+            <td>التسمية التلقائية: [اسم_السورة]_[رقم_الصفحة]_[التاريخ_والوقت] مع إمكانية التعديل.</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-EXP-04</span></td>
+            <td>مشاركة الملف</td>
+            <td>Share Sheet أصلي للنظام لمشاركة الملف عبر تطبيقات أخرى.</td>
+            <td><span class="priority low">منخفضة</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-EXP-05</span></td>
+            <td>الرفع على Drive</td>
+            <td>للمستخدمين المسجّلين: خيار رفع الملف مباشرةً على Google Drive بعد التصدير.</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 3.6 -->
+      <h3 id="s3-6">3.6 وحدة الملاحظات والتعليقات</h3>
+      <table class="req-table">
+        <thead><tr><th>المعرّف</th><th>الوصف المختصر</th><th>التفاصيل</th><th>الأولوية</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="req-id">FR-NOTE-01</span></td>
+            <td>الضغط المطوّل</td>
+            <td>عند الضغط المطوّل (Long Press) على أي حرف أو كلمة، تظهر نافذة منبثقة لإضافة ملاحظة.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-NOTE-02</span></td>
+            <td>حقل الملاحظة</td>
+            <td>النافذة تحتوي: حقل نص متعدد الأسطر، ثلاثة أزرار للون (أحمر، أخضر، أصفر)، زر "حفظ" وزر "إلغاء".</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-NOTE-03</span></td>
+            <td>دلالة الألوان</td>
+            <td>أحمر = خطأ متكرر يحتاج تصحيح · أصفر = يحتاج مراجعة · أخضر = تمّ حفظه جيداً.</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-NOTE-04</span></td>
+            <td>عرض الملاحظات</td>
+            <td>تُعلَّم الكلمة بنقطة ملونة أسفلها. الضغط على الكلمة المعلّمة يتيح عرض الملاحظة أو تعديلها أو حذفها.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-NOTE-05</span></td>
+            <td>تصدير الملاحظات</td>
+            <td>تصدير الملاحظات كملف PDF أو تقرير نصي.</td>
+            <td><span class="priority low">منخفضة</span></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- 3.7 -->
+      <h3 id="s3-7">3.7 وحدة الواجهة العامة والإعدادات</h3>
+      <table class="req-table">
+        <thead><tr><th>المعرّف</th><th>الوصف المختصر</th><th>التفاصيل</th><th>الأولوية</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="req-id">FR-UI-01</span></td>
+            <td>الوضع الليلي/الصباحي</td>
+            <td>مفتاح للتبديل بين الوضع الليلي (خلفية داكنة) والصباحي (خلفية بيضاء) مع حفظ التفضيل.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-UI-02</span></td>
+            <td>التبديل التلقائي</td>
+            <td>خيار للتبديل التلقائي بحسب إعدادات النظام (System Dark Mode).</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-UI-03</span></td>
+            <td>حجم الخط</td>
+            <td>ثلاثة أحجام للخط: صغير، متوسط، كبير.</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-UI-04</span></td>
+            <td>التنقل الأفقي</td>
+            <td>التنقل بين الصفحات أفقياً من اليمين إلى اليسار وفق تقليد المصحف.</td>
+            <td><span class="priority high">عالية</span></td>
+          </tr>
+          <tr>
+            <td><span class="req-id">FR-UI-05</span></td>
+            <td>رقم الصفحة والجزء</td>
+            <td>عرض رقم الصفحة الحالية ورقم الجزء باستمرار في أعلى أو أسفل الشاشة.</td>
+            <td><span class="priority mid">متوسطة</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ===== SECTION 4 ===== -->
+    <section class="section" id="s4">
+      <div class="section-header">
+        <span class="section-num">04</span>
+        <h2>المتطلبات غير الوظيفية</h2>
+      </div>
+
+      <h3>4.1 متطلبات الأداء</h3>
+      <table class="req-table">
+        <thead><tr><th>المعرّف</th><th>المعيار</th><th>القيمة المطلوبة</th><th>الأولوية</th></tr></thead>
+        <tbody>
+          <tr><td><span class="req-id">NFR-PERF-01</span></td><td>وقت تحميل الصفحة</td><td>أقل من 1.5 ثانية على شبكة 4G</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td><span class="req-id">NFR-PERF-02</span></td><td>تأخر بدء التسجيل</td><td>أقل من 300 ميلي ثانية</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td><span class="req-id">NFR-PERF-03</span></td><td>تطبيق التأثيرات</td><td>أقل من 2 ثانية لكل دقيقة تسجيل</td><td><span class="priority mid">متوسطة</span></td></tr>
+          <tr><td><span class="req-id">NFR-PERF-04</span></td><td>استجابة الواجهة</td><td>أقل من 100 ميلي ثانية</td><td><span class="priority high">عالية</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>4.2 متطلبات الأمان والخصوصية</h3>
+      <table class="req-table">
+        <thead><tr><th>المعرّف</th><th>المتطلب</th><th>التفاصيل</th><th>الأولوية</th></tr></thead>
+        <tbody>
+          <tr><td><span class="req-id">NFR-SEC-01</span></td><td>تخزين البيانات</td><td>لا يُرفع أي محتوى صوتي إلى أي خادم إلا بموافقة صريحة من المستخدم</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td><span class="req-id">NFR-SEC-02</span></td><td>تشفير النقل</td><td>جميع الاتصالات تستخدم HTTPS / TLS 1.3</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td><span class="req-id">NFR-SEC-03</span></td><td>تخزين التوكن</td><td>تشفير رمز Google OAuth وتخزينه في Keychain/Keystore الآمن</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td><span class="req-id">NFR-SEC-04</span></td><td>سياسة الخصوصية</td><td>عرض سياسة خصوصية واضحة قبل تسجيل الدخول</td><td><span class="priority high">عالية</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>4.3 متطلبات التوافق</h3>
+      <table class="req-table">
+        <thead><tr><th>المعرّف</th><th>المنصة</th><th>الإصدار الأدنى</th><th>الأولوية</th></tr></thead>
+        <tbody>
+          <tr><td><span class="req-id">NFR-COMP-01</span></td><td>iOS</td><td>iOS 15+</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td><span class="req-id">NFR-COMP-02</span></td><td>Android</td><td>Android 8.0 / API 26+</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td><span class="req-id">NFR-COMP-03</span></td><td>المتصفحات</td><td>Chrome 90+ · Safari 14+ · Firefox 88+ · Edge 90+</td><td><span class="priority mid">متوسطة</span></td></tr>
+          <tr><td><span class="req-id">NFR-COMP-04</span></td><td>الشاشات</td><td>4" إلى 12" (أجهزة لوحية)</td><td><span class="priority high">عالية</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>4.4 متطلبات قابلية الاستخدام</h3>
+      <ul class="bullet-list">
+        <li>يجب أن يتمكن المستخدم الجديد من إتمام أول تسميع خلال 3 دقائق دون مساعدة</li>
+        <li>يجب أن تدعم الواجهة بالكامل اتجاه RTL (يمين إلى يسار)</li>
+        <li>التوافق مع معايير WCAG 2.1 المستوى AA لدعم ذوي الاحتياجات الخاصة</li>
+        <li>معدل توفر لا يقل عن 99.5% للخدمات المحلية</li>
+      </ul>
+    </section>
+
+    <!-- ===== SECTION 5 ===== -->
+    <section class="section" id="s5">
+      <div class="section-header">
+        <span class="section-num">05</span>
+        <h2>متطلبات الواجهات الخارجية</h2>
+      </div>
+
+      <h3>5.1 الواجهات البرمجية الخارجية (APIs)</h3>
+      <table class="req-table">
+        <thead><tr><th>الخدمة</th><th>الغرض</th><th>التفاصيل</th><th>الأولوية</th></tr></thead>
+        <tbody>
+          <tr><td><span class="req-id">Quran API</span></td><td>بيانات القرآن</td><td>Tanzil.net أو Quran.com API v4 — نص القرآن، التشكيل، بيانات الصفحات والأجزاء</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td><span class="req-id">Google OAuth</span></td><td>المصادقة</td><td>OAuth 2.0 — تسجيل الدخول والحصول على رمز الوصول</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td><span class="req-id">Drive API v3</span></td><td>تخزين سحابي</td><td>رفع الملفات الصوتية وإدارتها</td><td><span class="priority mid">متوسطة</span></td></tr>
+          <tr><td><span class="req-id">Web Audio API</span></td><td>معالجة الصوت</td><td>تطبيق التأثيرات الصوتية في بيئة الويب</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td><span class="req-id">MediaRecorder</span></td><td>التسجيل</td><td>واجهة التسجيل الصوتي على الويب والمتصفحات</td><td><span class="priority high">عالية</span></td></tr>
+        </tbody>
+      </table>
+
+      <h3>5.2 واجهة الأجهزة</h3>
+      <ul class="bullet-list">
+        <li>الميكروفون: طلب إذن استخدامه مع رسالة تشرح الغرض منه</li>
+        <li>التخزين: قراءة وكتابة الملفات الصوتية في مجلد مخصص</li>
+        <li>المشاركة: Share Sheet أصلي للنظام</li>
+      </ul>
+    </section>
+
+    <!-- ===== SECTION 6 ===== -->
+    <section class="section" id="s6">
+      <div class="section-header">
+        <span class="section-num">06</span>
+        <h2>نماذج حالات الاستخدام</h2>
+      </div>
+
+      <div class="uc-card">
+        <div class="uc-header">
+          <span class="uc-id">UC-01</span>
+          <span class="uc-title">إجراء جلسة تسميع</span>
+        </div>
+        <div class="uc-body">
+          <div class="uc-row"><div class="uc-key">الممثل الرئيسي</div><div class="uc-val">المستخدم (ضيف أو مسجّل)</div></div>
+          <div class="uc-row"><div class="uc-key">المحفز</div><div class="uc-val">يريد المستخدم اختبار حفظه لسورة معينة</div></div>
+          <div class="uc-row"><div class="uc-key">المسار الرئيسي</div><div class="uc-val">1. يفتح التطبيق ويختار السورة من القائمة الجانبية
+2. تظهر الصفحة الأولى من السورة
+3. يضغط على زر "ابدأ التسميع"
+4. يختفي النص ويبدأ التسجيل الصوتي
+5. يقرأ المستخدم ما يحفظ
+6. يضغط "إيقاف التسجيل"
+7. تعود الكلمات ويظهر مشغّل الصوت
+8. يستمع المستخدم ويقارن تسجيله بالنص</div></div>
+          <div class="uc-row"><div class="uc-key">مسارات بديلة</div><div class="uc-val">• إذا لم يمنح إذن الميكروفون → عرض رسالة لطلبه
+• إذا انقطع التسجيل → حفظ تلقائي لما سُجّل</div></div>
+        </div>
+      </div>
+
+      <div class="uc-card">
+        <div class="uc-header">
+          <span class="uc-id">UC-02</span>
+          <span class="uc-title">إضافة ملاحظة على كلمة</span>
+        </div>
+        <div class="uc-body">
+          <div class="uc-row"><div class="uc-key">الممثل الرئيسي</div><div class="uc-val">المستخدم</div></div>
+          <div class="uc-row"><div class="uc-key">المحفز</div><div class="uc-val">لاحظ المستخدم خطأً أو أراد الإشارة لكلمة معينة</div></div>
+          <div class="uc-row"><div class="uc-key">المسار الرئيسي</div><div class="uc-val">1. يضغط المستخدم ضغطاً مطوّلاً على الكلمة
+2. تظهر نافذة منبثقة
+3. يختار اللون المناسب (أحمر/أصفر/أخضر)
+4. يكتب الملاحظة
+5. يضغط "حفظ"
+6. تُعلَّم الكلمة بنقطة ملونة</div></div>
+          <div class="uc-row"><div class="uc-key">مسارات بديلة</div><div class="uc-val">• يضغط "إلغاء" فتُغلق النافذة دون حفظ</div></div>
+        </div>
+      </div>
+
+      <div class="uc-card">
+        <div class="uc-header">
+          <span class="uc-id">UC-03</span>
+          <span class="uc-title">تصدير التسجيل مع التأثيرات</span>
+        </div>
+        <div class="uc-body">
+          <div class="uc-row"><div class="uc-key">الممثل الرئيسي</div><div class="uc-val">المستخدم</div></div>
+          <div class="uc-row"><div class="uc-key">المحفز</div><div class="uc-val">يريد حفظ التسجيل بعد تطبيق تأثير صدى الصوت</div></div>
+          <div class="uc-row"><div class="uc-key">المسار الرئيسي</div><div class="uc-val">1. يفتح التسجيل في المشغّل
+2. يختار مؤثر "صدى الصوت" من القائمة
+3. يستمع للمعاينة الفورية
+4. يضغط "تصدير"
+5. يختار الجودة والصيغة
+6. يُحفظ الملف في مجلد التطبيق</div></div>
+          <div class="uc-row"><div class="uc-key">مسارات بديلة</div><div class="uc-val">• للمستخدم المسجّل: رفع مباشر على Google Drive</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SECTION 7 ===== -->
+    <section class="section" id="s7">
+      <div class="section-header">
+        <span class="section-num">07</span>
+        <h2>متطلبات البيانات</h2>
+      </div>
+
+      <h3>7.1 كيانات البيانات الرئيسية</h3>
+      <table class="req-table">
+        <thead><tr><th>الكيان</th><th>الغرض</th><th>الحقول الأساسية</th></tr></thead>
+        <tbody>
+          <tr><td><strong style="color:var(--gold2)">User</strong></td><td>بيانات المستخدم</td><td style="font-family:monospace;font-size:12px">userId, googleId, email, displayName, createdAt, lastLoginAt</td></tr>
+          <tr><td><strong style="color:var(--gold2)">Recording</strong></td><td>التسجيل الصوتي</td><td style="font-family:monospace;font-size:12px">recordingId, userId, surahNumber, pageNumber, filePath, durationSeconds, appliedEffects, createdAt, driveFileId</td></tr>
+          <tr><td><strong style="color:var(--gold2)">Annotation</strong></td><td>الملاحظات</td><td style="font-family:monospace;font-size:12px">annotationId, userId, surahNumber, wordIndex, charIndex, color, noteText, createdAt</td></tr>
+          <tr><td><strong style="color:var(--gold2)">UserPreference</strong></td><td>تفضيلات المستخدم</td><td style="font-family:monospace;font-size:12px">userId, theme, fontSize, lastReadPage, lastReadSurah</td></tr>
+        </tbody>
+      </table>
+
+      <h3>7.2 سياسة التخزين</h3>
+      <ul class="bullet-list">
+        <li>بيانات القرآن: مُضمَّنة في حزمة التطبيق أو قابلة للتحميل مرة واحدة — حد أقصى 50MB</li>
+        <li>التسجيلات الصوتية: مخزَّنة محلياً في مجلد خاص — حد أقصى 500MB</li>
+        <li>الملاحظات: قاعدة بيانات SQLite محلية مشفَّرة</li>
+        <li>المزامنة: اختيارية عبر Google Drive للمستخدمين المسجّلين</li>
+      </ul>
+    </section>
+
+    <!-- ===== SECTION 8 ===== -->
+    <section class="section" id="s8">
+      <div class="section-header">
+        <span class="section-num">08</span>
+        <h2>القيود والاعتبارات الخاصة</h2>
+      </div>
+
+      <div class="constraint-box">
+        <div class="box-title">القيود الدينية — أولوية قصوى</div>
+        <ul class="bullet-list" style="margin:0">
+          <li>لا يجوز بأي حال تعديل نص القرآن الكريم أو تغيير ترتيب آياته أو سوره</li>
+          <li>يجب عرض النص بخط واضح وتشكيل كامل مع احترام قواعد الرسم العثماني</li>
+          <li>يُستحسن استشارة هيئة متخصصة للتحقق من صحة المصدر المستخدم</li>
+        </ul>
+      </div>
+
+      <h3>8.2 القيود التقنية</h3>
+      <ul class="bullet-list">
+        <li>استخدام Web Audio API و MediaRecorder API يقتصر على المتصفحات الحديثة الداعمة</li>
+        <li>تسجيل الصوت يتطلب بروتوكول HTTPS في بيئة الويب</li>
+        <li>بعض التأثيرات المتقدمة قد تستلزم معالجة على الجانب الخادم</li>
+      </ul>
+
+      <h3>8.3 القيود القانونية</h3>
+      <ul class="bullet-list">
+        <li>الامتثال للائحة GDPR لمستخدمي الاتحاد الأوروبي وسياسات Apple و Google</li>
+        <li>الحصول على رخصة مناسبة لمصدر بيانات القرآن المستخدم</li>
+      </ul>
+    </section>
+
+    <!-- ===== SECTION 9 ===== -->
+    <section class="section" id="s9">
+      <div class="section-header">
+        <span class="section-num">09</span>
+        <h2>الملاحق</h2>
+      </div>
+
+      <h3>9.1 ملخص المتطلبات الوظيفية</h3>
+      <table class="req-table">
+        <thead><tr><th>الوحدة</th><th>عدد المتطلبات</th><th>النطاق</th><th>الأولوية القصوى</th></tr></thead>
+        <tbody>
+          <tr><td>المصادقة</td><td style="text-align:center;font-weight:700;color:var(--gold)">5</td><td>FR-AUTH-01 → FR-AUTH-05</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td>عرض القرآن</td><td style="text-align:center;font-weight:700;color:var(--gold)">6</td><td>FR-QURAN-01 → FR-QURAN-06</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td>التسجيل الصوتي</td><td style="text-align:center;font-weight:700;color:var(--gold)">7</td><td>FR-REC-01 → FR-REC-07</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td>التأثيرات الصوتية</td><td style="text-align:center;font-weight:700;color:var(--gold)">4</td><td>FR-FX-01 → FR-FX-04</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td>التصدير</td><td style="text-align:center;font-weight:700;color:var(--gold)">5</td><td>FR-EXP-01 → FR-EXP-05</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td>الملاحظات</td><td style="text-align:center;font-weight:700;color:var(--gold)">5</td><td>FR-NOTE-01 → FR-NOTE-05</td><td><span class="priority high">عالية</span></td></tr>
+          <tr><td>الواجهة والإعدادات</td><td style="text-align:center;font-weight:700;color:var(--gold)">5</td><td>FR-UI-01 → FR-UI-05</td><td><span class="priority high">عالية</span></td></tr>
+          <tr style="background:rgba(201,168,76,0.08)"><td><strong style="color:var(--text)">الإجمالي</strong></td><td style="text-align:center;font-weight:900;color:var(--gold);font-size:18px">37</td><td colspan="2" style="color:var(--text2)">متطلباً وظيفياً موزعاً على 7 وحدات</td></tr>
+        </tbody>
+      </table>
+
+      <h3>9.2 مصفوفة تخطيط الإصدارات</h3>
+      <table class="req-table">
+        <thead><tr><th>الإصدار</th><th>المتطلبات</th><th>الوصف</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong style="color:var(--gold2)">v1.0 — MVP</strong></td>
+            <td>جميع المتطلبات ذات أولوية عالية</td>
+            <td>المنتج الحد الأدنى القابل للإطلاق مع الوظائف الجوهرية</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--green3)">v1.5</strong></td>
+            <td>المتطلبات ذات أولوية متوسطة</td>
+            <td>تحسينات تجربة المستخدم والتكامل مع Drive</td>
+          </tr>
+          <tr>
+            <td><strong style="color:var(--text2)">v2.0</strong></td>
+            <td>المتطلبات ذات أولوية منخفضة</td>
+            <td>ميزات متقدمة وتصدير البيانات</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="text-align:center; padding: 40px 0 0; border-top: 1px solid var(--border2); margin-top: 40px;">
+        <div style="font-family:'Amiri',serif; font-size:28px; color:var(--gold); margin-bottom:8px">بسم الله الرحمن الرحيم</div>
+        <div style="font-size:12px; color:var(--text3)">نهاية الوثيقة — الإصدار 1.0 — فبراير 2025</div>
+      </div>
+    </section>
+
+  </div><!-- end content -->
+</main>
+
+<!-- FOOTER -->
+<footer class="doc-footer">
+  <span style="font-family:'Amiri',serif;font-size:16px;color:var(--gold)">SRS v1.0</span>
+  <span>تطبيق حفظ القرآن الكريم بالتسميع الصوتي — 2025</span>
+  <span>37 متطلباً وظيفياً | 9 أقسام</span>
+</footer>
+
+<button class="scroll-top" id="scrollTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+  // Progress bar
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const scrolled = doc.scrollTop / (doc.scrollHeight - doc.clientHeight);
+    document.getElementById('progressBar').style.transform = `scaleX(${1 - scrolled})`;
+
+    document.getElementById('scrollTop').classList.toggle('show', doc.scrollTop > 400);
+  });
+
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('.section[id]');
+  const navLinks = document.querySelectorAll('.nav-link');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        navLinks.forEach(l => {
+          l.classList.toggle('active', l.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>

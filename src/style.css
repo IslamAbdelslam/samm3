@@ -1,0 +1,501 @@
+/* =============================================
+   سَمَّعْ — Global CSS Design System
+   Based on SRS §5.1 color palette
+   ============================================= */
+
+/* ── Google Fonts are loaded in index.html ── */
+
+:root {
+  /* === Night/Dark Mode Colors (default) === */
+  --bg:          #0a0f0d;
+  --bg2:         #0e1510;
+  --bg3:         #121a14;
+  --surface:     #141c16;
+  --surface2:    #1a2420;
+  --surface3:    #1f2c22;
+
+  /* === Brand Colors === */
+  --green:       #2d6a4f;
+  --green2:      #40916c;
+  --green3:      #74c69d;
+  --green-dark:  #1B5E20;
+
+  --gold:        #C9A84C;
+  --gold2:       #e8c96a;
+  --gold3:       #f0d98a;
+
+  --blue-dark:   #0D1B2A;
+
+  /* === Text Colors === */
+  --text:        #e8e4d9;
+  --text2:       #b8b4a8;
+  --text3:       #7a7670;
+  --text4:       #4a4640;
+
+  /* === Semantic === */
+  --danger:      #e05252;
+  --warning:     #d4a017;
+  --success:     #4a9e6b;
+
+  /* === Borders === */
+  --border:      rgba(201, 168, 76, 0.2);
+  --border2:     rgba(201, 168, 76, 0.08);
+  --border3:     rgba(201, 168, 76, 0.04);
+
+  /* === Quran Text === */
+  --quran-font:  'Noto Naskh Arabic', 'Amiri', serif;
+  --ui-font:     'Cairo', sans-serif;
+
+  /* === Font Sizes === */
+  --quran-size:  26px;
+  --quran-size-sm: 20px;
+  --quran-size-lg: 32px;
+
+  /* === Spacing === */
+  --header-h:    56px;
+  --footer-h:    80px;
+  --sidebar-w:   300px;
+  --radius:      12px;
+  --radius-sm:   8px;
+  --radius-lg:   20px;
+
+  /* === Shadows === */
+  --shadow:      0 4px 24px rgba(0,0,0,0.4);
+  --shadow-gold: 0 0 20px rgba(201,168,76,0.15);
+  --shadow-up:   0 -4px 24px rgba(0,0,0,0.5);
+
+  /* === Transitions === */
+  --ease:        cubic-bezier(0.4, 0, 0.2, 1);
+  --dur:         0.25s;
+  --dur-slow:    0.4s;
+}
+
+/* ── Light / Morning Mode ── */
+[data-theme="light"] {
+  --bg:       #faf7f2;
+  --bg2:      #f3efe8;
+  --bg3:      #ece8e0;
+  --surface:  #ffffff;
+  --surface2: #f5f1ea;
+  --surface3: #ede9e0;
+
+  --text:     #1a1814;
+  --text2:    #3a3630;
+  --text3:    #7a7670;
+  --text4:    #a8a49e;
+
+  --border:   rgba(27, 94, 32, 0.15);
+  --border2:  rgba(27, 94, 32, 0.06);
+  --border3:  rgba(27, 94, 32, 0.03);
+
+  --shadow:   0 4px 24px rgba(0,0,0,0.1);
+  --shadow-up: 0 -4px 24px rgba(0,0,0,0.08);
+}
+
+/* ── Reset ── */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--ui-font);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  position: relative;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+/* ── Focus ── */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Typography ── */
+.font-quran {
+  font-family: var(--quran-font);
+  line-height: 2;
+}
+
+.font-ui {
+  font-family: var(--ui-font);
+}
+
+/* ── Utility Classes ── */
+.hidden { display: none !important; }
+.invisible { visibility: hidden !important; }
+.flex { display: flex; }
+.flex-col { display: flex; flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+.w-full { width: 100%; }
+.h-full { height: 100%; }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+
+/* ── Screen Transitions ── */
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.screen-enter {
+  animation: screenIn var(--dur-slow) var(--ease) forwards;
+}
+
+@keyframes screenIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Card ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+/* ── Button Base ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--ui-font);
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--ease) var(--dur);
+  user-select: none;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.btn:active { transform: scale(0.96); }
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  color: #0a0f0d;
+  padding: 12px 24px;
+  font-size: 15px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(201,168,76,0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 24px rgba(201,168,76,0.45);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text2);
+  padding: 10px 20px;
+  border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+  background: var(--border3);
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-icon {
+  background: var(--surface2);
+  color: var(--text2);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  font-size: 18px;
+}
+
+.btn-icon:hover {
+  background: var(--surface3);
+  color: var(--gold);
+  border-color: var(--border);
+}
+
+.btn-danger {
+  background: rgba(224,82,82,0.15);
+  color: var(--danger);
+  border: 1px solid rgba(224,82,82,0.3);
+  padding: 10px 20px;
+}
+
+.btn-danger:hover {
+  background: rgba(224,82,82,0.25);
+}
+
+/* ── Badge / Tag ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.badge-gold {
+  background: rgba(201,168,76,0.12);
+  color: var(--gold2);
+  border: 1px solid rgba(201,168,76,0.25);
+}
+
+.badge-green {
+  background: rgba(74,158,107,0.12);
+  color: var(--green3);
+  border: 1px solid rgba(74,158,107,0.25);
+}
+
+.badge-makkiyya {
+  background: rgba(201,168,76,0.1);
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.2);
+}
+
+.badge-madaniyya {
+  background: rgba(64,145,108,0.1);
+  color: var(--green2);
+  border: 1px solid rgba(64,145,108,0.2);
+}
+
+/* ── Overlay / Backdrop ── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.overlay-enter { animation: overlayIn var(--dur) var(--ease) forwards; }
+.overlay-leave { animation: overlayOut var(--dur) var(--ease) forwards; }
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes overlayOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* ── Modal Sheet ── */
+.sheet {
+  background: var(--surface);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-top: 1px solid var(--border);
+  width: 100%;
+  max-width: 520px;
+  padding: 24px;
+  transform: translateY(0);
+  animation: sheetIn var(--dur-slow) var(--ease) forwards;
+}
+
+@keyframes sheetIn {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 20px;
+}
+
+.sheet-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* ── Form Elements ── */
+textarea, input[type="text"] {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--ui-font);
+  font-size: 14px;
+  padding: 10px 14px;
+  width: 100%;
+  resize: none;
+  transition: border-color var(--dur) var(--ease);
+  direction: rtl;
+}
+
+textarea:focus, input[type="text"]:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+textarea::placeholder, input::placeholder {
+  color: var(--text3);
+}
+
+/* ── Toast ── */
+.toast-container {
+  position: fixed;
+  bottom: calc(var(--footer-h) + 16px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.toast {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  padding: 10px 20px;
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 600;
+  box-shadow: var(--shadow);
+  animation: toastIn 0.3s var(--ease), toastOut 0.3s var(--ease) 2.7s forwards;
+  white-space: nowrap;
+}
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes toastOut {
+  from { opacity: 1; transform: translateY(0); }
+  to   { opacity: 0; transform: translateY(-8px); }
+}
+
+/* ── Divider ── */
+.divider {
+  height: 1px;
+  background: var(--border2);
+  width: 100%;
+  margin: 12px 0;
+}
+
+/* ── Spinner ── */
+.spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Islamic Background Pattern ── */
+.bg-pattern::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 15% 10%, rgba(27,94,32,0.12) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 85% 85%, rgba(201,168,76,0.06) 0%, transparent 50%),
+    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a84c' fill-opacity='0.025'%3E%3Cpolygon points='30 0 60 20 60 40 30 60 0 40 0 20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ── Annotation Color Dots ── */
+.word-annotated {
+  position: relative;
+  cursor: pointer;
+}
+
+.word-annotated::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  right: 50%;
+  transform: translateX(50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  border: 1px solid var(--bg);
+}
+
+.word-annotated[data-color="red"]::after    { background: #e05252; }
+.word-annotated[data-color="yellow"]::after { background: #d4a017; }
+.word-annotated[data-color="green"]::after  { background: #4a9e6b; }
+
+/* ── Waveform Canvas ── */
+#waveform {
+  display: block;
+  width: 100%;
+  height: 60px;
+}
+
+/* ── Font size classes ── */
+body[data-fontsize="small"]  .quran-page { font-size: var(--quran-size-sm) !important; }
+body[data-fontsize="medium"] .quran-page { font-size: var(--quran-size)    !important; }
+body[data-fontsize="large"]  .quran-page { font-size: var(--quran-size-lg) !important; }
+
+/* ── Page hidden state (during recording) ── */
+.quran-page.text-hidden .word {
+  opacity: 0;
+  transition: opacity 0.6s var(--ease);
+}
+
+.quran-page.text-visible .word {
+  opacity: 1;
+  transition: opacity 0.5s var(--ease);
+}

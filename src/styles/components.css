@@ -1,0 +1,1496 @@
+/* =============================================
+   سَمَّعْ — Component Styles
+   ============================================= */
+
+/* ── Welcome Screen ── */
+.welcome-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg);
+  overflow: auto;
+}
+
+.welcome-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 32px;
+  padding: 48px 24px;
+  max-width: 440px;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.welcome-logo {
+  text-align: center;
+}
+
+.welcome-bismillah {
+  font-family: var(--quran-font);
+  font-size: 20px;
+  color: var(--gold);
+  opacity: 0.7;
+  margin-bottom: 16px;
+}
+
+.welcome-app-name {
+  font-family: 'Amiri', serif;
+  font-size: 72px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+  background: linear-gradient(135deg, var(--gold), var(--gold3));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 12px;
+}
+
+.welcome-tagline {
+  font-size: 15px;
+  color: var(--text2);
+  font-weight: 300;
+  line-height: 1.6;
+}
+
+.welcome-features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  font-size: 14px;
+  color: var(--text2);
+  transition: border-color var(--dur) var(--ease);
+}
+
+.feature-item:hover {
+  border-color: var(--border);
+}
+
+.feature-icon {
+  font-size: 20px;
+}
+
+.welcome-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  align-items: center;
+}
+
+.welcome-skip {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 16px;
+  border-radius: var(--radius-lg);
+}
+
+.welcome-or {
+  font-size: 12px;
+  color: var(--text3);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.welcome-google {
+  width: 100%;
+  padding: 12px 24px;
+  gap: 10px;
+  border-radius: var(--radius-lg);
+}
+
+.welcome-privacy {
+  font-size: 11px;
+  color: var(--text3);
+  text-align: center;
+  line-height: 1.6;
+  max-width: 300px;
+}
+
+@keyframes screenOut {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+}
+
+/* ── Reader Screen ── */
+.reader-screen {
+  background: var(--bg);
+}
+
+/* ── Reader Footer — just a spacer so text doesn't hide behind FAB ── */
+.reader-footer {
+  flex-shrink: 0;
+  height: 80px;
+  /* matches FAB height + padding */
+  background: transparent;
+}
+
+/* ── Recorder screen overlay: anchors to reader-screen (position:absolute)
+   Correct! reader-body has position:relative which was intercepting before.
+   Now recContainer is a sibling of reader-body, so these target reader-screen. ── */
+.rec-screen-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding-bottom: 16px;
+  /* space below idle FAB */
+  pointer-events: none;
+  /* passthrough when nothing interactive */
+}
+
+.rec-screen-overlay>* {
+  pointer-events: auto;
+}
+
+/* ── Player container ── */
+.player-container {
+  position: absolute;
+  /* relative to reader-screen, NOT viewport */
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  max-height: 85dvh;
+  overflow-y: auto;
+}
+
+.player-container.hidden {
+  display: none;
+}
+
+/* ── Recorder: idle state — FAB button ── */
+.recorder-wrap {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* center the FAB */
+}
+
+.recorder-idle {
+  display: flex;
+  justify-content: center;
+}
+
+.rec-fab {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 100px;
+  border: none;
+  background: linear-gradient(135deg, #2d6a4f, #40916c);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(45, 106, 79, 0.5);
+  transition: transform 0.15s, box-shadow 0.15s;
+  font-family: var(--ui-font);
+}
+
+.rec-fab:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(45, 106, 79, 0.6);
+}
+
+.rec-fab:active {
+  transform: scale(0.97);
+}
+
+.rec-icon {
+  font-size: 18px;
+}
+
+/* ── Recorder: active state — anchored to screen bottom ── */
+.recorder-active {
+  /* position: absolute scoped to .reader-screen (position:absolute inset:0) */
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: none;
+  /* hidden by default */
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px 24px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-top: 2px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
+  box-shadow: var(--shadow-up);
+}
+
+.recorder-active:not(.hidden) {
+  display: flex;
+  /* show when not hidden */
+}
+
+.recorder-active.hidden {
+  display: none !important;
+}
+
+.recorder-idle.hidden {
+  display: none !important;
+}
+
+.rec-waveform-wrap {
+  width: 100%;
+  height: 52px;
+  background: var(--bg2);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+}
+
+.rec-waveform-wrap canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.rec-timer {
+  font-size: 22px;
+  font-weight: 700;
+  color: #e05252;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 2px;
+}
+
+.rec-stop-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 32px;
+  border-radius: 100px;
+  border: 2px solid #e05252;
+  background: rgba(224, 82, 82, 0.12);
+  color: #e05252;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-family: var(--ui-font);
+  width: 100%;
+  justify-content: center;
+}
+
+.rec-stop-btn:hover {
+  background: rgba(224, 82, 82, 0.22);
+}
+
+.rec-stop-icon {
+  font-size: 18px;
+}
+
+
+.reader-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px;
+  height: var(--header-h);
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border2);
+  flex-shrink: 0;
+  gap: 16px;
+}
+
+.reader-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.reader-surah-name {
+  font-family: var(--quran-font);
+  font-size: 18px;
+  color: var(--gold2);
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.reader-page-info {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.reader-body {
+  flex: 1;
+  overflow: hidden;
+  position: relative;
+  /* needed for page-num-badge */
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  min-height: 0;
+}
+
+.page-container {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 12px 16px 12px;
+}
+
+.quran-page {
+  font-family: 'Noto Naskh Arabic', 'Amiri', serif;
+  font-size: var(--quran-size);
+  line-height: 2.2;
+  color: var(--text);
+  direction: rtl;
+  padding: 20px 24px 24px;
+  max-width: 700px;
+  width: 100%;
+  position: relative;
+  background: var(--surface);
+  border-radius: var(--radius);
+  border: 1px solid var(--border2);
+  box-shadow: var(--shadow);
+}
+
+/* Mushaf-style: continuous justified RTL text flow */
+.page-verses {
+  direction: rtl;
+  text-align: justify;
+  text-align-last: right;
+  word-spacing: 0.04em;
+  letter-spacing: 0.01em;
+  line-height: 2.2;
+}
+
+.word {
+  display: inline;
+  cursor: default;
+  user-select: text;
+  transition: opacity 0.5s ease, background-color 0.15s ease;
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+.word:hover {
+  background: rgba(201, 168, 76, 0.1);
+}
+
+/* Inline ayah number marker — gold color, slightly smaller */
+.ayah-number {
+  display: inline;
+  color: var(--gold);
+  font-size: 0.78em;
+  font-family: 'Noto Naskh Arabic', serif;
+  cursor: default;
+  user-select: none;
+  padding: 0 3px;
+  opacity: 0.85;
+}
+
+/* ── Surah Name Header / Separator ─────────────── */
+.surah-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  margin: 10px 0 6px;
+}
+
+.surah-name-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #0f2510 0%, #1a3a1a 50%, #0f2510 100%);
+  border: 1.5px solid var(--gold2);
+  border-radius: 10px;
+  padding: 10px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Subtle shimmer lines for decoration */
+.surah-name-banner::before,
+.surah-name-banner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30%;
+  background: linear-gradient(90deg, transparent, rgba(201, 168, 76, 0.06), transparent);
+}
+
+.surah-name-banner::before {
+  left: 0;
+}
+
+.surah-name-banner::after {
+  right: 0;
+}
+
+.surah-ornament {
+  font-family: var(--quran-font);
+  font-size: 20px;
+  color: var(--gold);
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.surah-name-text {
+  font-family: var(--quran-font);
+  font-size: 20px;
+  font-weight: 700;
+  color: #f5e6c8;
+  letter-spacing: 1px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.5);
+}
+
+.surah-bismillah {
+  font-family: var(--quran-font);
+  font-size: 17px;
+  color: var(--text2);
+  text-align: center;
+  margin-top: 6px;
+  direction: rtl;
+  opacity: 0.9;
+}
+
+
+/* Fixed page number badge — always at the bottom of reader-body */
+.page-num-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text3);
+  letter-spacing: 1.5px;
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: 100px;
+  padding: 3px 14px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Skeleton loading shimmer */
+.page-skeleton {
+  padding: 24px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  direction: rtl;
+}
+
+.skel-line {
+  height: 22px;
+  border-radius: 8px;
+  background: linear-gradient(90deg,
+      var(--surface2) 25%,
+      var(--border) 50%,
+      var(--surface2) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s infinite linear;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Keep old .page-loading for fallback */
+.page-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 80px 24px;
+  color: var(--text3);
+  font-size: 14px;
+}
+
+.offline-msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 60px 24px;
+  text-align: center;
+}
+
+.offline-icon {
+  font-size: 48px;
+}
+
+.offline-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text2);
+}
+
+.offline-sub {
+  font-size: 13px;
+  color: var(--text3);
+}
+
+/* ── Reader Footer (swipe nav — no buttons) ── */
+.reader-footer {
+  height: var(--footer-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  flex-shrink: 0;
+}
+
+.recorder-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Recorder Component ── */
+.recorder-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.recorder-idle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rec-fab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, var(--green-dark), var(--green2));
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  padding: 12px 24px;
+  font-family: var(--ui-font);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(45, 106, 79, 0.4);
+  transition: all var(--ease) var(--dur);
+}
+
+.rec-fab:hover {
+  box-shadow: 0 6px 24px rgba(45, 106, 79, 0.5);
+  transform: translateY(-1px);
+}
+
+.rec-fab:active {
+  transform: scale(0.96);
+}
+
+.rec-icon {
+  font-size: 18px;
+}
+
+.recorder-active {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  max-width: 340px;
+}
+
+.rec-waveform-wrap {
+  width: 100%;
+  height: 44px;
+  background: rgba(201, 168, 76, 0.05);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+#waveform {
+  height: 44px;
+}
+
+.rec-timer {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gold);
+  font-family: 'Cairo', monospace;
+  letter-spacing: 2px;
+  animation: recPulse 1s ease-in-out infinite;
+}
+
+@keyframes recPulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.rec-stop-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(224, 82, 82, 0.15);
+  color: var(--danger);
+  border: 1px solid rgba(224, 82, 82, 0.35);
+  border-radius: 100px;
+  padding: 10px 20px;
+  font-family: var(--ui-font);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--ease) var(--dur);
+}
+
+.rec-stop-btn:hover {
+  background: rgba(224, 82, 82, 0.25);
+  transform: scale(1.02);
+}
+
+.rec-stop-icon {
+  font-size: 16px;
+}
+
+/* ── Player ── */
+.player-container {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 16px;
+  flex-shrink: 0;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.player-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.player-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.player-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text2);
+}
+
+.player-controls audio {
+  width: 100%;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  accent-color: var(--gold);
+}
+
+.player-effects {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.effects-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.effects-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.fx-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--ui-font);
+  background: var(--surface2);
+  color: var(--text2);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all var(--ease) 0.15s;
+}
+
+.fx-chip:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.fx-chip.active {
+  background: rgba(201, 168, 76, 0.12);
+  border-color: var(--gold);
+  color: var(--gold2);
+}
+
+.fx-reset {
+  background: transparent;
+  border-color: var(--border2);
+  color: var(--text3);
+  font-size: 11px;
+}
+
+.fx-reset:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+.fx-processing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--text3);
+}
+
+.player-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.player-export,
+.player-share {
+  flex: 1;
+  padding: 10px;
+  font-size: 13px;
+}
+
+/* ── Sidebar ── */
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 16px 12px;
+  border-bottom: 1px solid var(--border2);
+}
+
+.sidebar-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sidebar-icon {
+  font-size: 18px;
+}
+
+.sidebar-search-wrap {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border2);
+}
+
+.sidebar-search {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--ui-font);
+  font-size: 14px;
+  padding: 8px 12px;
+  width: 100%;
+  direction: rtl;
+}
+
+.sidebar-search:focus {
+  outline: none;
+  border-color: var(--gold);
+}
+
+.sidebar-list {
+  overflow-y: auto;
+  flex: 1;
+  padding: 4px 0 24px;
+}
+
+.surah-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 16px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: right;
+  transition: background var(--dur) var(--ease);
+  border-bottom: 1px solid var(--border3);
+}
+
+.surah-item:hover {
+  background: rgba(201, 168, 76, 0.05);
+}
+
+.surah-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text3);
+  width: 24px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.surah-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.surah-name-ar {
+  font-family: var(--quran-font);
+  font-size: 16px;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.surah-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.surah-ayahs {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 600;
+}
+
+.surah-name-en {
+  font-size: 10px;
+  color: var(--text4);
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+  max-width: 70px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Overlay backdrop ──────────────────────────── */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(2px);
+}
+
+.overlay-enter {
+  animation: overlayIn 0.25s ease forwards;
+}
+
+.overlay-leave {
+  animation: overlayOut 0.25s ease forwards;
+}
+
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes overlayOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+/* ── Bottom sheet ──────────────────────────────── */
+.sheet {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 20px 20px 0 0;
+  padding: 12px 20px 32px;
+  width: 100%;
+  max-width: 500px;
+  animation: sheetUp 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes sheetUp {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+.sheet-handle {
+  width: 40px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+}
+
+.sheet-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text1);
+  text-align: center;
+  margin-bottom: 4px;
+}
+
+/* ── Annotation Modal ── */
+.ann-colors {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+  justify-content: center;
+}
+
+.ann-color-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  border: 2px solid transparent;
+  background: var(--surface2);
+  cursor: pointer;
+  font-size: 11px;
+  font-family: var(--ui-font);
+  color: var(--text3);
+  transition: all var(--ease) 0.15s;
+  flex: 1;
+}
+
+.ann-color-btn .ann-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color);
+  display: block;
+}
+
+.ann-color-btn[data-color="red"] .ann-dot {
+  background: #e05252;
+}
+
+.ann-color-btn[data-color="yellow"] .ann-dot {
+  background: #d4a017;
+}
+
+.ann-color-btn[data-color="green"] .ann-dot {
+  background: #4a9e6b;
+}
+
+.ann-color-btn[data-color="red"].selected {
+  border-color: #e05252;
+  color: #e05252;
+}
+
+.ann-color-btn[data-color="yellow"].selected {
+  border-color: #d4a017;
+  color: #d4a017;
+}
+
+.ann-color-btn[data-color="green"].selected {
+  border-color: #4a9e6b;
+  color: #4a9e6b;
+}
+
+#annNote {
+  margin-bottom: 16px;
+}
+
+.sheet-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.ann-view-color {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ann-view-note {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 16px;
+  min-height: 60px;
+}
+
+/* ── Settings ── */
+.settings-section {
+  margin-bottom: 4px;
+}
+
+.settings-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+.settings-options {
+  display: flex;
+  gap: 8px;
+}
+
+.opt-btn {
+  flex: 1;
+  padding: 10px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text2);
+  font-family: var(--ui-font);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--ease) 0.15s;
+}
+
+.opt-btn:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.opt-btn.active {
+  background: rgba(201, 168, 76, 0.12);
+  border-color: var(--gold);
+  color: var(--gold2);
+}
+
+.settings-about {
+  background: var(--bg2);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+}
+
+.about-name {
+  font-family: 'Amiri', serif;
+  font-size: 32px;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+
+.about-desc {
+  font-size: 13px;
+  color: var(--text2);
+  margin-bottom: 6px;
+}
+
+.about-ver {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* ── Responsive ── */
+@media (min-width: 600px) {
+  .quran-page {
+    padding: 32px 40px 60px;
+    font-size: calc(var(--quran-size) + 2px);
+  }
+
+  .reader-header {
+    padding: 12px 24px;
+  }
+
+  .reader-footer {
+    padding: 0 24px;
+  }
+
+  .player-container {
+    padding: 20px 24px;
+  }
+}
+
+@media (min-width: 900px) {
+  .reader-body {
+    align-items: center;
+  }
+
+  .page-container {
+    align-items: flex-start;
+    padding: 32px 0 40px;
+  }
+
+  .quran-page {
+    font-size: calc(var(--quran-size) + 4px);
+    box-shadow: var(--shadow);
+    border-radius: var(--radius);
+    border: 1px solid var(--border2);
+  }
+}
+
+/* ═══════════════════════════════════════════════
+   Premium Audio Player
+   ═══════════════════════════════════════════════ */
+
+.player-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: var(--radius) var(--radius) 0 0;
+  padding: 16px 18px 24px;
+  direction: rtl;
+}
+
+.player-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.player-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--gold2);
+  letter-spacing: 0.5px;
+}
+
+/* ── Seek bar + time ── */
+.player-body {
+  margin-bottom: 14px;
+}
+
+.player-time-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.player-time-cur,
+.player-time-dur {
+  font-size: 11px;
+  color: var(--text3);
+  font-variant-numeric: tabular-nums;
+  min-width: 32px;
+}
+
+.player-seek {
+  flex: 1;
+  -webkit-appearance: none;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  outline: none;
+  cursor: pointer;
+}
+
+.player-seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 6px rgba(201, 168, 76, 0.5);
+  cursor: pointer;
+}
+
+/* ── Transport ── */
+.player-transport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.transport-btn {
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 100px;
+  color: var(--text2);
+  font-size: 12px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.transport-btn:hover {
+  background: var(--border);
+  color: var(--text1);
+}
+
+.transport-btn.play-btn {
+  background: var(--gold);
+  color: #000;
+  font-size: 16px;
+  padding: 8px 20px;
+  font-weight: 700;
+  border-color: transparent;
+}
+
+.transport-btn.play-btn:hover {
+  background: var(--gold2);
+}
+
+/* ── Reverb section ── */
+.player-reverb-section {
+  margin: 14px 0;
+  border: 1px solid var(--border2);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.reverb-toggle-btn {
+  width: 100%;
+  background: var(--surface2);
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 14px;
+  color: var(--text2);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  text-align: right;
+  transition: background 0.15s;
+}
+
+.reverb-toggle-btn:hover {
+  background: var(--border);
+}
+
+.reverb-toggle-btn.active {
+  color: var(--gold2);
+}
+
+.reverb-icon {
+  font-size: 16px;
+}
+
+.reverb-badge {
+  margin-right: auto;
+  font-size: 11px;
+  background: var(--border);
+  padding: 2px 8px;
+  border-radius: 100px;
+  color: var(--text3);
+}
+
+.reverb-toggle-btn.active .reverb-badge {
+  background: rgba(201, 168, 76, 0.15);
+  color: var(--gold);
+}
+
+/* ── Reverb panel (sliders) ── */
+.reverb-panel {
+  padding: 14px;
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.reverb-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reverb-row-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.reverb-row-label {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 600;
+}
+
+.reverb-row-value {
+  font-size: 11px;
+  color: var(--gold2);
+  font-variant-numeric: tabular-nums;
+  min-width: 38px;
+  text-align: left;
+}
+
+.reverb-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--border);
+  outline: none;
+  cursor: pointer;
+}
+
+.reverb-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 4px rgba(201, 168, 76, 0.4);
+  cursor: pointer;
+}
+
+.reverb-apply-btn {
+  margin-top: 4px;
+  width: 100%;
+}
+
+.reverb-reset-btn {
+  width: 100%;
+  font-size: 12px;
+}
+
+/* ── Player actions ── */
+.player-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+
+.player-actions .btn {
+  flex: 1;
+}
+
+/* ── Processing indicator ── */
+.fx-processing {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--text3);
+  background: var(--bg2);
+  border-top: 1px solid var(--border2);
+}
+
+/* ── Reverb Quick Presets ── */
+.reverb-presets {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border2);
+  margin-bottom: 2px;
+  flex-wrap: wrap;
+}
+
+.reverb-presets-label {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.reverb-preset-btn {
+  padding: 5px 12px;
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text2);
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: var(--ui-font);
+  white-space: nowrap;
+}
+
+.reverb-preset-btn:hover {
+  border-color: var(--gold2);
+  color: var(--gold2);
+}
+
+.reverb-preset-btn.active {
+  background: rgba(201, 168, 76, 0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+  font-weight: 700;
+}
