@@ -1,4 +1,4 @@
-import { getCachedPage, setCachedPage } from '../utils/db.js'
+import { getCachedPage, setCachedPage, getCachedPageCount } from '../utils/db.js'
 
 const BASE_URL = 'https://api.quran.com/api/v4'
 const TOTAL_PAGES = 604
@@ -69,6 +69,40 @@ function processPageData(pageNum, json) {
 
   // No rawJson stored — keeps cache lean
   return { pageNumber: pageNum, verses: verses.map(v => ({ verse_key: v.verse_key })), words }
+}
+
+/**
+ * Prefetch ALL 604 pages on first load.
+ * Skips pages already in IndexedDB (supports resume).
+ * @param {function(done:number, total:number):void} onProgress
+ */
+export async function prefetchAllPages(onProgress) {
+  const total = TOTAL_PAGES
+  let done = await getCachedPageCount()
+
+  // Report initial state (pages already cached)
+  onProgress?.(done, total)
+  if (done >= total) return
+
+  for (let p = 1; p <= total; p++) {
+    // Skip already-cached pages (fast check via memory or IDB)
+    if (memCache.has(p)) { done++; onProgress?.(done, total); continue }
+    const cached = await getCachedPage(p)
+    if (cached) {
+      memCache.set(p, cached.data)
+      done++
+      onProgress?.(done, total)
+      continue
+    }
+
+    // Fetch from network
+    await fetchFromNetwork(p).catch(() => {})
+    done++
+    onProgress?.(done, total)
+
+    // Throttle to avoid rate-limiting
+    await new Promise(r => setTimeout(r, 150))
+  }
 }
 
 /**

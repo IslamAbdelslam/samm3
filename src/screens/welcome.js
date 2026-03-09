@@ -28,6 +28,15 @@ export function createWelcomeScreen(app, onEnter) {
         </div>
       </div>
 
+      <!-- Download progress bar (shown on first visit) -->
+      <div class="prefetch-banner" id="prefetchBanner" style="display:none">
+        <div class="prefetch-text" id="prefetchText">جارٍ تحميل القرآن الكريم...</div>
+        <div class="prefetch-bar-track">
+          <div class="prefetch-bar-fill" id="prefetchFill" style="width:0%"></div>
+        </div>
+        <div class="prefetch-count" id="prefetchCount">0 / 604</div>
+      </div>
+
       <div class="welcome-actions">
         <button class="btn btn-primary welcome-skip" id="skipBtn">
           ابدأ الآن
@@ -47,22 +56,35 @@ export function createWelcomeScreen(app, onEnter) {
 
   app.appendChild(screen)
 
-  screen.querySelector('#skipBtn').addEventListener('click', () => {
-    screen.style.animation = 'screenOut 0.3s ease forwards'
-    setTimeout(() => {
-      screen.remove()
-      onEnter()
-    }, 280)
-  })
+  // ── Public method to update the progress bar ─────────────────────────────
+  screen.updatePrefetchProgress = function(done, total) {
+    const banner  = screen.querySelector('#prefetchBanner')
+    const fill    = screen.querySelector('#prefetchFill')
+    const count   = screen.querySelector('#prefetchCount')
+    const text    = screen.querySelector('#prefetchText')
 
-  screen.querySelector('#googleBtn').addEventListener('click', () => {
-    // Google OAuth not implemented in MVP — treat as guest
+    banner.style.display = 'block'
+    const pct = Math.round((done / total) * 100)
+    fill.style.width = pct + '%'
+    count.textContent = `${done} / ${total}`
+
+    if (done >= total) {
+      text.textContent = '✅ تم تحميل القرآن الكريم بالكامل!'
+      fill.style.background = 'var(--color-success, #4caf50)'
+      setTimeout(() => { banner.style.opacity = '0'; banner.style.transition = 'opacity 1s' }, 2000)
+    } else {
+      text.textContent = 'جارٍ تحميل القرآن الكريم للاستخدام بدون إنترنت...'
+    }
+  }
+
+  // ── Button handlers ──────────────────────────────────────────────────────
+  const enter = () => {
     screen.style.animation = 'screenOut 0.3s ease forwards'
-    setTimeout(() => {
-      screen.remove()
-      onEnter()
-    }, 280)
-  })
+    setTimeout(() => { screen.remove(); onEnter() }, 280)
+  }
+
+  screen.querySelector('#skipBtn').addEventListener('click', enter)
+  screen.querySelector('#googleBtn').addEventListener('click', enter)
 
   return screen
 }

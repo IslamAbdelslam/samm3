@@ -50,6 +50,11 @@ export async function setCachedPage(page, data) {
   return db.put('quran-pages', { page, data, cachedAt: Date.now() })
 }
 
+export async function getCachedPageCount() {
+  const db = await getDB()
+  return db.count('quran-pages')
+}
+
 // ── Recordings ────────────────────────────────
 export async function saveRecording(meta) {
   const db = await getDB()
